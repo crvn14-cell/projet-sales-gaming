@@ -152,7 +152,7 @@ elif page == "Analyse financière comparative":
         st.image(
             img_path,
             caption="Évolution historique du cours Ubisoft — Source : Google Finance (EPA : UBI)",
-            use_column_width=True
+            use_container_width=True
         )
     else:
         st.error(
@@ -1791,4 +1791,5 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
