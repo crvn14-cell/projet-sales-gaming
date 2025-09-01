@@ -79,7 +79,7 @@ def load_finance_data():
 # PAGE 1 : INTRODUCTION
 # ────────────────────────────────────────────────
 if page == "Introduction":
-    st.title("🎮 Ubisoft — Introduction")
+    st.title(" 🎮 Ubisoft — Introduction")
     introduction = """
     Ubisoft est l’un des plus grands éditeurs de jeux vidéo au monde, reconnu pour ses franchises emblématiques telles que *Assassin's Creed*, *Far Cry*, *Just Dance*, *Rainbow Six* ou encore *The Division*. Fondée en 1986 par les frères Guillemot, l’entreprise a longtemps incarné le savoir-faire vidéoludique français. Introduite en Bourse en 1996, Ubisoft connaît une croissance spectaculaire pendant plus de deux décennies, atteignant un sommet historique en 2018 avec une action valorisée à plus de **100 €**.
 
@@ -89,13 +89,12 @@ if page == "Introduction":
     """
     st.markdown(introduction)
     st.divider()
-    st.info("ℹ️ Cette introduction servira de base pour le dossier d'analyse sur la trajectoire d'Ubisoft.")
-
+    
 # ────────────────────────────────────────────────
 # PAGE 2 : ANALYSE FINANCIÈRE COMPARATIVE
 # ────────────────────────────────────────────────
 elif page == "Analyse financière comparative":
-    st.title("📊 Analyse Financière Comparative")
+    st.title(" 📊 Analyse Financière Comparative")
     st.caption("Évolution historique, comparaison avec le secteur et analyse des tendances.")
 
     try:
@@ -104,10 +103,7 @@ elif page == "Analyse financière comparative":
         st.error(f"⚠️ Chargement CSV échoué : {e}")
         st.stop()
 
-    with st.expander("📄 Détails du fichier chargé (Finance_Finale.csv)"):
-        st.write(df_finance.head())
-        st.caption(f"{df_finance.shape[0]} lignes × {df_finance.shape[1]} colonnes")
-
+   
     # ── PARTIE 1 : Historique Ubisoft (texte + image locale)
     st.markdown("""
     ## 1. Analyse financière comparative  
@@ -120,7 +116,7 @@ elif page == "Analyse financière comparative":
     """)
 
         # ── PARTIE 1 : Historique Ubisoft (chargement auto de l'image)
-    st.subheader("📈 Évolution historique du cours de l’action Ubisoft")
+    st.subheader(" Évolution historique du cours de l’action Ubisoft")
 
     @st.cache_data(show_spinner=False)
     def _find_ubisoft_chart() -> str | None:
@@ -174,7 +170,7 @@ elif page == "Analyse financière comparative":
     Cette dissociation entre l’évolution du marché global et celle d’Ubisoft confirme que **le problème semble spécifique à l’entreprise**. La performance boursière d’Ubisoft ne peut pas être attribuée à une crise sectorielle : au contraire, l’industrie du jeu vidéo **continue de progresser dans son ensemble**. Cela renforce l’hypothèse d’une **crise interne** — un axe que nous tenterons d’explorer dans les chapitres suivants.
     """)
 
-    st.subheader("📊 Comparaison Ubisoft vs ETF ESPO & HERO")
+    st.subheader(" Comparaison Ubisoft vs ETF ESPO & HERO")
     df_etf = pd.DataFrame({
         "Année":   [2020, 2021, 2022, 2023, 2024],
         "Ubisoft": [85,   75,   50,   25,   10],
@@ -195,9 +191,9 @@ elif page == "Analyse financière comparative":
     # ── PARTIE 3 : CA cumulé par éditeur (lecture robuste depuis df_finance)
     st.markdown("""
     **Observation complémentaire.**  
-    Sur la période étudiée, le **chiffre d’affaires cumulé** d’Ubisoft est **le plus faible parmi les éditeurs majeurs du secteur**. Il reste en dessous de celui de Take-Two.
+    Sur la période étudiée, le **chiffre d’affaires cumulé** d’Ubisoft est **le plus faible parmi les éditeurs majeurs du secteur**. 
     """)
-    st.subheader("🏢 Chiffre d’affaires cumulé par éditeur (2018–2024) — depuis Finance_Finale.csv")
+    st.subheader(" Chiffre d’affaires cumulé par éditeur (2018–2024) ")
 
     raw = df_finance.copy()
     norm_map = {c: norm_col(c) for c in raw.columns}
@@ -275,7 +271,7 @@ elif page == "Analyse financière comparative":
     Plus préoccupant encore, **le chiffre d’affaires d’Ubisoft n’évolue quasiment pas**, alors que la majorité des **concurrents** (*Sony Interactive Entertainment, Electronic Arts, Bandai Namco*, etc.) affichent **une croissance continue**.  
     Cette **stagnation** est un **signal d’alerte fort**, d’autant plus que le **marché global du jeu vidéo** est, lui, **en croissance**.
     """)
-    st.subheader("📊 Évolution du chiffre d’affaires (2018–2024) — multi-éditeurs (interactif)")
+    st.subheader("Évolution du chiffre d’affaires (2018–2024) ")
 
     def _to_long(df_in: pd.DataFrame) -> pd.DataFrame:
         df = df_in.rename(columns={c: unicodedata.normalize("NFKD", str(c)).encode("ascii","ignore").decode().strip().lower()
@@ -359,7 +355,7 @@ elif page == "Analyse financière comparative":
     **Le résultat net cumulé d’Ubisoft est en net retrait par rapport à ses pairs**, alors que la majorité de ses concurrents restent **bénéficiaires** sur la même période.  
     Ce **déficit chronique** montre qu’Ubisoft ne parvient pas à **transformer ses ventes en valeur** pour ses actionnaires, et que sa **structure de coûts** n’est pas suffisamment maîtrisée.
     """)
-    st.subheader("💹 Résultat net (M€) — évolution 2018–2024, multi-éditeurs (interactif)")
+    st.subheader(" Résultat net (M€) — évolution 2018–2024")
 
     def to_long_metric(df_in: pd.DataFrame, metric_keywords) -> pd.DataFrame:
         df = df_in.rename(columns={c: norm_col(c) for c in df_in.columns})
@@ -438,7 +434,7 @@ elif page == "Analyse financière comparative":
     **Ubisoft** emploie un volume de salariés **comparable** à celui d’**Activision Blizzard**, mais ses **performances financières** sont nettement **inférieures**.  
     Par exemple, **Electronic Arts** opère avec **environ un tiers de personnel en moins**, tout en générant un **chiffre d’affaires** et un **résultat net** largement supérieurs.
     """)
-    st.subheader("👥 Masse salariale (M€) — évolution 2018–2024, multi-éditeurs (interactif)")
+    st.subheader(" Masse salariale (M€) — évolution 2018–2024")
 
     def _to_long_payroll(df_in: pd.DataFrame) -> pd.DataFrame:
         df = df_in.rename(columns={c: norm_col(c) for c in df_in.columns})
@@ -514,7 +510,7 @@ elif page == "Analyse financière comparative":
 
     # Bulles : CA↔Résultat (taille = masse salariale) + Masse salariale ↔ Effectif
     st.divider()
-    st.subheader("🫧 Résultat net vs Chiffre d’affaires — taille = Masse salariale (2018–2024)")
+    st.subheader(" Résultat net vs Chiffre d’affaires ")
     st.caption("Les deux graphiques ci-dessous utilisent les mêmes données centralisées.")
 
     def _normalize_columns_for_panel(df_in: pd.DataFrame) -> pd.DataFrame:
@@ -599,7 +595,7 @@ elif page == "Analyse financière comparative":
         ax_b.legend(ncol=2, fontsize=9, frameon=True)
         st.pyplot(fig_b)
 
-        st.subheader("👥 Masse salariale vs Effectif total (2018–2024)")
+        st.subheader(" Masse salariale vs Effectif total (2018–2024)")
         fig_c, ax_c = plt.subplots(figsize=(9.5, 6.0))
         for ed in sorted(dfp_panel["Editeur"].unique()):
             d = dfp_panel[dfp_panel["Editeur"] == ed]
@@ -1141,12 +1137,12 @@ elif page == "Perception et critique : la rupture avec les joueurs":
         st.stop()
 
     # ───────── Stats descriptives (COUNT + MEAN uniquement)
-    st.subheader("📊 Statistiques descriptives")
+    st.subheader(" Statistiques descriptives")
     stats = df_notes.describe().loc[["count", "mean"]].round(3)
     st.dataframe(stats, use_container_width=True)
 
     # ───────── Graphiques : Presse vs Joueurs
-    st.subheader("📈 Comparaison des distributions")
+    st.subheader(" Comparaison des distributions")
     x_min, x_max = 0, 10
     sns.set_style("whitegrid")
 
@@ -1169,7 +1165,7 @@ elif page == "Perception et critique : la rupture avec les joueurs":
     st.pyplot(fig)
 
     # ───────── Analyse rapide
-    st.subheader("🔎 Analyse")
+    st.subheader(" Analyse")
     st.markdown("""
     - **Presse** : notes majoritairement concentrées entre **6 et 8**, reflétant une évaluation globalement positive.
     - **Joueurs** : distribution plus **étalée**, avec davantage de notes très basses → signe d'une **polarisation**.
@@ -1215,7 +1211,7 @@ elif page == "Perception et critique : la rupture avec les joueurs":
                         .sort_values("Year"))
 
         # ——— Graphique 1 : courbes annuelles
-        st.subheader("📈 Notes moyennes par année — Presse vs Joueurs")
+        st.subheader(" Notes moyennes par année — Presse vs Joueurs")
         fig_line, axl = plt.subplots(figsize=(10, 5))
         axl.plot(yearly["Year"], yearly["Press"], marker="o", linewidth=2.2, label="Presse", color="#2E7D32")
         axl.plot(yearly["Year"], yearly["Users"], marker="o", linewidth=2.2, label="Joueurs", color="#FB8C00")
@@ -1232,7 +1228,7 @@ elif page == "Perception et critique : la rupture avec les joueurs":
 
         st.pyplot(fig_line)
         # ——— Graphique 2 : écart moyen annuel (Users − Press)
-        st.subheader("📉 Écart moyen entre notes utilisateurs et presse (Users − Press)")
+        st.subheader(" Écart moyen entre notes utilisateurs et presse ")
         delta = yearly.copy()
         delta["Diff"] = delta["Users"] - delta["Press"]
 
@@ -1294,7 +1290,7 @@ utilisateurs et le produit livré, alimenté par des éléments récurrents dans
     import matplotlib.pyplot as plt
     import seaborn as sns
 
-    st.subheader("🎮 Top & Flop Ubisoft – Score moyen global (presse + utilisateurs)")
+    st.subheader(" Top & Flop Ubisoft – Score moyen global (presse + utilisateurs)")
 
     # --- Helpers pour retrouver les colonnes "Name", "Platform" et "Year" si elles ne sont pas déjà dans df_notes
     def _norm(s: str) -> str:
@@ -1450,7 +1446,7 @@ Beaucoup de joueurs font explicitement référence à *Black Flag*, renforçant 
     from wordcloud import WordCloud, STOPWORDS
     from textblob import TextBlob
 
-    st.subheader("🎨 Nuage de mots des critiques négatives — Skull & Bones")
+    st.subheader(" Nuage de mots des critiques négatives — Skull & Bones")
 
     # --- Installer automatiquement wordcloud & textblob si manquants
     def _ensure_package(mod_name, pip_name=None):
@@ -1630,7 +1626,7 @@ avec **le score critique le plus bas**.
     import numpy as np
     import streamlit as st
 
-    st.subheader("🟠 Durée de Développement vs Note Metacritic — 💰 Taille des bulles = Budget de développement")
+    st.subheader(" Durée de Développement vs Note Metacritic — 💰 Taille des bulles = Budget de développement")
 
     @st.cache_data
     def load_aaa():
