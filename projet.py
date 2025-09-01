@@ -79,10 +79,7 @@ def load_finance_data():
 # PAGE 1 : INTRODUCTION
 # ────────────────────────────────────────────────
 if page == "Introduction":
-   from PIL import Image
-
-from PIL import Image
-
+  
 # Charger l'image locale
 image = Image.open("titre.jpeg")
 
@@ -100,15 +97,15 @@ st.image(image, use_container_width=False, width=600)
 st.markdown("</div>", unsafe_allow_html=True)
 
 
-    introduction = """
+introduction = """
     Ubisoft est l’un des plus grands éditeurs de jeux vidéo au monde, reconnu pour ses franchises emblématiques telles que *Assassin's Creed*, *Far Cry*, *Just Dance*, *Rainbow Six* ou encore *The Division*. Fondée en 1986 par les frères Guillemot, l’entreprise a longtemps incarné le savoir-faire vidéoludique français. Introduite en Bourse en 1996, Ubisoft connaît une croissance spectaculaire pendant plus de deux décennies, atteignant un sommet historique en 2018 avec une action valorisée à plus de **100 €**.
 
     Depuis ce pic, Ubisoft semble enchaîner les difficultés. En **2024**, sa capitalisation boursière a chuté de plus de **6 milliards d’euros**, une dégringolade qui suscite de nombreuses interrogations. Est-elle le reflet d’une crise sectorielle généralisée ? Est-elle symptomatique de difficultés internes à l’entreprise ?
 
     À travers ce projet de *data analyse*, notre objectif est de comprendre les facteurs internes ayant contribué à ce déclin, en collectant des données financières, critiques et comportementales. Nous chercherons également à identifier les signaux faibles et les ruptures stratégiques pouvant expliquer cette trajectoire descendante, tout en proposant des pistes d’amélioration.
     """
-    st.markdown(introduction)
-    st.divider()
+st.markdown(introduction)
+st.divider()
     
 # ────────────────────────────────────────────────
 # PAGE 2 : ANALYSE FINANCIÈRE COMPARATIVE
@@ -1807,6 +1804,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
 
 
