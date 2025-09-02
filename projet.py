@@ -98,7 +98,7 @@ if page == "Introduction":
 )
     
     
-        st.divider()
+    st.divider()
     
     
     
@@ -1811,6 +1811,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
 
 
