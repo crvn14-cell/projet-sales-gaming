@@ -96,6 +96,7 @@ if page == "Introduction":
 # ────────────────────────────────────────────────
 elif page == "Analyse financière comparative":
     st.title(" 📊 Analyse Financière Comparative")
+    st.image("titre.jpeg", use_column_width=True, caption="Ubisoft — Franchises et univers emblématiques")
     st.caption("Évolution historique, comparaison avec le secteur et analyse des tendances.")
 
     try:
@@ -1788,5 +1789,6 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
 
