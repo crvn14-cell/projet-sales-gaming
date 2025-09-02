@@ -80,6 +80,26 @@ def load_finance_data():
 # ────────────────────────────────────────────────
 if page == "Introduction":
     st.image("imaubi.png", use_container_width=True)
+    st.markdown(
+    "<h1 style='text-align: center; color: #1E90FF;'>Étude sur le phénomène Ubisoft</h1>",
+    unsafe_allow_html=True
+)
+
+# Ajout du texte de préintroduction
+    st.markdown(
+    """
+    <div style="text-align: justify; font-size: 18px; line-height: 1.6;">
+        Ce projet a pour objectif <strong>d’étudier le phénomène Ubisoft</strong>, 
+        d’analyser son évolution, et d’explorer les raisons qui pourraient expliquer 
+        <strong>sa potentielle chute dans les prochaines années</strong>. 
+        Nous tenterons de comprendre comment une entreprise autrefois au sommet de 
+        l’innovation se retrouve aujourd’hui face à de nouveaux défis dans un marché 
+        vidéoludique en constante mutation.
+    </div>
+    """,
+        unsafe_allow_html=True
+)
+    
     st.title(" 🎮 Ubisoft — Introduction")
    
     introduction = """
@@ -1789,6 +1809,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
 
 
