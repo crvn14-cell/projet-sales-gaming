@@ -80,10 +80,7 @@ def load_finance_data():
 # ────────────────────────────────────────────────
 if page == "Introduction":
     st.image("imaubi.png", use_container_width=True)
-    st.markdown(
-    "<h1 style='text-align: center; color: #1E90FF;'>Étude sur le phénomène Ubisoft</h1>",
-    unsafe_allow_html=True
-)
+    
 
 # Ajout du texte de préintroduction
     st.markdown(
@@ -99,6 +96,11 @@ if page == "Introduction":
     """,
         unsafe_allow_html=True
 )
+    
+    
+        st.divider()
+    
+    
     
     st.title(" 🎮 Ubisoft — Introduction")
    
@@ -1809,6 +1811,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
 
 
