@@ -82,23 +82,23 @@ if page == "Introduction":
     st.title(" 🎮 Ubisoft — Introduction")
     from PIL import Image, ImageFilter
 
-try:
+    try:
     img = Image.open("titre.jpeg")
 
     # Upscale doux si l’image est petite (vise ~1600 px de large)
-    target_w = 1600
-    if img.width < target_w:
-        ratio = target_w / img.width
-        new_size = (int(img.width * ratio), int(img.height * ratio))
-        img = img.resize(new_size, Image.LANCZOS)
+        target_w = 1600
+        if img.width < target_w:
+            ratio = target_w / img.width
+            new_size = (int(img.width * ratio), int(img.height * ratio))
+            img = img.resize(new_size, Image.LANCZOS)
 
     # Légère accentuation (évite l’effet “flou” après upscaling)
-    img = img.filter(ImageFilter.UnsharpMask(radius=1.6, percent=140, threshold=3))
+            img = img.filter(ImageFilter.UnsharpMask(radius=1.6, percent=140, threshold=3))
 
     # Affichage sans param déprécié
-    st.image(img, use_container_width=True, caption="Ubisoft — Franchises et univers emblématiques")
-except Exception as e:
-    st.warning(f"Impossible de charger 'titre.jpeg' ({e}).")
+            st.image(img, use_container_width=True, caption="Ubisoft — Franchises et univers emblématiques")
+    except Exception as e:
+        st.warning(f"Impossible de charger 'titre.jpeg' ({e}).")
     introduction = """
     Ubisoft est l’un des plus grands éditeurs de jeux vidéo au monde, reconnu pour ses franchises emblématiques telles que *Assassin's Creed*, *Far Cry*, *Just Dance*, *Rainbow Six* ou encore *The Division*. Fondée en 1986 par les frères Guillemot, l’entreprise a longtemps incarné le savoir-faire vidéoludique français. Introduite en Bourse en 1996, Ubisoft connaît une croissance spectaculaire pendant plus de deux décennies, atteignant un sommet historique en 2018 avec une action valorisée à plus de **100 €**.
 
@@ -1806,6 +1806,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
 
 
