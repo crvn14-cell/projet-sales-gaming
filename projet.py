@@ -83,7 +83,7 @@ if page == "Introduction":
     from PIL import Image, ImageFilter
 
     try:
-    img = Image.open("titre.jpeg")
+        img = Image.open("titre.jpeg")
 
     # Upscale doux si l’image est petite (vise ~1600 px de large)
         target_w = 1600
@@ -1806,6 +1806,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
 
 
