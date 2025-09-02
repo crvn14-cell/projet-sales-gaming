@@ -80,8 +80,7 @@ def load_finance_data():
 # ────────────────────────────────────────────────
 if page == "Introduction":
     st.title(" 🎮 Ubisoft — Introduction")
-    st.image("imaubi.jpeg", use_column_width=True, caption="Ubisoft — Franchises et univers emblématiques")
-    
+   
     introduction = """
     Ubisoft est l’un des plus grands éditeurs de jeux vidéo au monde, reconnu pour ses franchises emblématiques telles que *Assassin's Creed*, *Far Cry*, *Just Dance*, *Rainbow Six* ou encore *The Division*. Fondée en 1986 par les frères Guillemot, l’entreprise a longtemps incarné le savoir-faire vidéoludique français. Introduite en Bourse en 1996, Ubisoft connaît une croissance spectaculaire pendant plus de deux décennies, atteignant un sommet historique en 2018 avec une action valorisée à plus de **100 €**.
 
@@ -1789,6 +1788,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
 
 
