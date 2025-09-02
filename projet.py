@@ -79,7 +79,7 @@ def load_finance_data():
 # PAGE 1 : INTRODUCTION
 # ────────────────────────────────────────────────
 if page == "Introduction":
-    st.image("imaubi.png", use_column_width=True)
+    st.image("imaubi.png", use_container_width=True)
     st.title(" 🎮 Ubisoft — Introduction")
    
     introduction = """
@@ -1789,6 +1789,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
 
 
