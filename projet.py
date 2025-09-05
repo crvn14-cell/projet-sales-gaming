@@ -631,64 +631,7 @@ elif page == "Analyse financière comparative":
         ax_c.legend(ncol=2, fontsize=9, frameon=True)
         st.pyplot(fig_c)
 
-    st.subheader("📊 Chiffre d'Affaires, Masse Salariale et Résultat Net (2018-2025)")
-
-# Années
-    years = df_no2025['year']
-
-# Création de la figure Plotly
-    fig_plotly = go.Figure()
-
-# Ubisoft
-    fig_plotly.add_trace(go.Bar(x=years, y=ubisoft_ca, name='Ubisoft - CA', marker_color='#1F77B4'))
-    fig_plotly.add_trace(go.Bar(x=years, y=ubisoft_salarie, name='Ubisoft - Masse Salariale', marker_color='#AEC7E8'))
-    fig_plotly.add_trace(go.Bar(x=years, y=ubisoft_resultat, name='Ubisoft - Résultat net', marker_color='#7BC8F6'))
-
-# Electronic Arts
-    fig_plotly.add_trace(go.Bar(x=years, y=ea_ca, name='EA - CA', marker_color='#2CA02C'))
-    fig_plotly.add_trace(go.Bar(x=years, y=ea_salarie, name='EA - Masse Salariale', marker_color='#98DF8A'))
-    fig_plotly.add_trace(go.Bar(x=years, y=ea_resultat, name='EA - Résultat net', marker_color='#90EE90'))
-
-# Activision Blizzard
-    fig_plotly.add_trace(go.Bar(x=years, y=activision_ca, name='Activision - CA', marker_color='#D62728'))
-    fig_plotly.add_trace(go.Bar(x=years, y=activision_salarie, name='Activision - Masse Salariale', marker_color='#FF9896'))
-    fig_plotly.add_trace(go.Bar(x=years, y=activision_resultat, name='Activision - Résultat net', marker_color='#FF6347'))
-
-# Nintendo
-    fig_plotly.add_trace(go.Bar(x=years, y=nintendo_ca, name='Nintendo - CA', marker_color='#9A0EEA'))
-    fig_plotly.add_trace(go.Bar(x=years, y=nintendo_salarie, name='Nintendo - Masse Salariale', marker_color='#EE82EE'))
-    fig_plotly.add_trace(go.Bar(x=years, y=nintendo_resultat, name='Nintendo - Résultat net', marker_color='#C875C4'))
-
-# Sony
-    fig_plotly.add_trace(go.Bar(x=years, y=sony_ca, name='Sony - CA', marker_color='#653700'))
-    fig_plotly.add_trace(go.Bar(x=years, y=sony_salarie, name='Sony - Masse Salariale', marker_color='#800000'))
-    fig_plotly.add_trace(go.Bar(x=years, y=sony_resultat, name='Sony - Résultat net', marker_color='#A0522D'))
-
-# Take Two
-    fig_plotly.add_trace(go.Bar(x=years, y=taketwo_ca, name='Take Two - CA', marker_color='#DBB40C'))
-    fig_plotly.add_trace(go.Bar(x=years, y=taketwo_salarie, name='Take Two - Masse Salariale', marker_color='#FFD700'))
-    fig_plotly.add_trace(go.Bar(x=years, y=taketwo_resultat, name='Take Two - Résultat net', marker_color='#FAC205'))
-
-# Bandai Namco
-    fig_plotly.add_trace(go.Bar(x=years, y=bandai_ca, name='Bandai Namco - CA', marker_color='#D1B26F'))
-    fig_plotly.add_trace(go.Bar(x=years, y=bandai_salarie, name='Bandai Namco - Masse Salariale', marker_color='#D2B48C'))
-    fig_plotly.add_trace(go.Bar(x=years, y=bandai_resultat, name='Bandai Namco - Résultat net', marker_color='#F5DEB3'))
-
-# Mise en page
-    fig_plotly.update_layout(
-    barmode='group',
-    title="Chiffre d'Affaires, Masse Salariale et Résultat Net (2018-2025)",
-    xaxis_title="Année",
-    yaxis_title="Montant (en M€)",
-    legend_title="Éditeur / Type",
-    bargap=0.15,
-    bargroupgap=0.05
-    )
-
-# Affichage dans Streamlit
-    st.plotly_chart(fig_plotly, use_container_width=True)
-
-    
+  
     
 # ────────────────────────────────────────────────
 # PAGE 3 : ANALYSE DES PERFORMANCES DES JEUX UBISOFT
@@ -1870,6 +1813,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     """,
     unsafe_allow_html=True
 )
+
 
 
 
