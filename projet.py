@@ -1814,6 +1814,22 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
     unsafe_allow_html=True
 )
 
+    # Ligne de séparation
+    st.markdown("---")
+
+# Bloc de crédits
+    st.markdown(
+    """
+    <div style="text-align: center; font-size: 18px; padding: 10px;">
+        <strong>👨‍💻 Projet réalisé par :</strong><br>
+        <span style="font-size: 16px;">Alexandre Ducos</span> • 
+        <span style="font-size: 16px;">Ariane Sitcheping</span> • 
+        <span style="font-size: 16px;">Christopher Valentin</span>
+    </div>
+    """,
+    unsafe_allow_html=True
+    )
+
 
 
 
