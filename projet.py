@@ -16,7 +16,7 @@ st.set_page_config(page_title="Dossier Ubisoft", page_icon="🎮", layout="wide"
 page = st.sidebar.radio(
     "Aller vers :",
     [
-        "Introduction - TEST",
+        "Introduction",
         "Analyse financière comparative",
         "Analyse des performances des jeux Ubisoft",
         "Perception et critique : la rupture avec les joueurs",
@@ -1829,6 +1829,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
