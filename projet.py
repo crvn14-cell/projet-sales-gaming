@@ -79,7 +79,10 @@ def load_finance_data():
 # PAGE 1 : INTRODUCTION
 # ────────────────────────────────────────────────
 if page == "Introduction":
-    st.image("imaubi.png", use_container_width=True)
+    # Image d'introduction centrée avec largeur limitée
+    col_left, col_mid, col_right = st.columns([2, 1, 1])
+    with col_left:
+        st.image("imaubi.png", use_container_width=True)
     
 
 # Ajout du texte de préintroduction
@@ -142,24 +145,16 @@ elif page == "Analyse financière comparative":
         st.stop()
 
    
-    # ── PARTIE 1 : Historique Ubisoft (texte + image locale)
-    st.markdown("""
-    ## 1. Analyse financière comparative  
-    ### Une trajectoire spectaculaire puis un effondrement brutal…
+    # ── PARTIE 1 : Historique Ubisoft (titre hors colonnes, texte à gauche / image à droite)
 
-    L’action **Ubisoft** a connu une évolution remarquable depuis son introduction en Bourse le **1er juillet 1996**. Dès le premier jour de cotation, le titre est multiplié par **252**, porté par l’engouement pour l’industrie vidéoludique et une forte levée de fonds.  
-    Cette dynamique s’est poursuivie pendant plus d’une décennie, atteignant un **pic historique de plus de 100 € en juillet 2018**. Cette valorisation exceptionnelle reflète alors la solidité des franchises d’Ubisoft, telles que *Assassin’s Creed*, *Far Cry*, *Rainbow Six Siege* et *The Division*, ainsi que la stratégie de l’éditeur axée sur les **jeux à monde ouvert** et à fort contenu **solo/multijoueur**.  
-    Entre **2014 et 2018**, les résultats financiers sont en nette progression, avec un chiffre d’affaires passant de **1,4** à **2,2 milliards de dollars** et une amélioration significative des marges. À cette période, **Tencent** entre au capital, consolidant l’image d’Ubisoft comme acteur stratégique à l’international.  
-    Pourtant, dès **2019**, les résultats commencent à décevoir : plusieurs jeux ne répondent pas aux attentes, les retards s’accumulent, et la rentabilité s’effrite. Le titre entame alors une **chute prolongée** : en **cinq ans**, l’action perd plus de **80 % de sa valeur**. Depuis 2018, cela représente une **perte de capitalisation boursière d’environ 9 milliards d’euros**.
-    """)
-
-        # ── PARTIE 1 : Historique Ubisoft (chargement auto de l'image)
-    st.subheader(" Évolution historique du cours de l’action Ubisoft")
-
+    # Titre global (hors colonnes)
+    st.markdown("## 1. Analyse financière comparative")
+    st.markdown("### Une trajectoire spectaculaire puis un effondrement brutal…")
+    
+    # Fonction utilitaire (si pas déjà définie plus haut)
     @st.cache_data(show_spinner=False)
     def _find_ubisoft_chart() -> str | None:
-        base = Path(__file__).parent
-        # chemins les plus probables (mets l'image à la racine ou dans assets/images/static)
+        base = Path(__file__).parent if "__file__" in globals() else Path.cwd()
         candidates = [
             base / "ubisoft_google_finance.png",
             base / "assets" / "ubisoft_google_finance.png",
@@ -173,29 +168,44 @@ elif page == "Analyse financière comparative":
         for p in candidates:
             if p.exists():
                 return str(p)
-        # recherche de secours par motif
         for folder in [base, base / "assets", base / "images", base / "static"]:
             for pat in ("ubisoft*finance*.*", "Ubisoft*Finance*.*", "Capture d'écran 2025-08-25 141139.*"):
                 for p in folder.glob(pat):
                     return str(p)
         return None
-
-    img_path = _find_ubisoft_chart()
-
-    if img_path:
-        st.image(
-            img_path,
-            caption="Évolution historique du cours Ubisoft — Source : Google Finance (EPA : UBI)",
-            use_container_width=True
-        )
-    else:
-        st.error(
-            "Image introuvable. Place le fichier **ubisoft_google_finance.png** "
-            "ou **Capture d'écran 2025-08-25 141139.png** à la racine du projet "
-            "ou dans **./assets/**, **./images/** ou **./static/**."
-        )
-
+    
+    # Contenu en colonnes (paragraphe vs image)
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        paragraphe = '''
+    L’action **Ubisoft** a connu une évolution remarquable depuis son introduction en Bourse le **1er juillet 1996**. Dès le premier jour de cotation, le titre est multiplié par **252**, porté par l’engouement pour l’industrie vidéoludique et une forte levée de fonds.  
+    Cette dynamique s’est poursuivie pendant plus d’une décennie, atteignant un **pic historique de plus de 100 € en juillet 2018**. Cette valorisation exceptionnelle reflète alors la solidité des franchises d’Ubisoft, telles que *Assassin’s Creed*, *Far Cry*, *Rainbow Six Siege* et *The Division*, ainsi que la stratégie de l’éditeur axée sur les **jeux à monde ouvert** et à fort contenu **solo/multijoueur**.  
+    Entre **2014 et 2018**, les résultats financiers sont en nette progression, avec un chiffre d’affaires passant de **1,4** à **2,2 milliards de dollars** et une amélioration significative des marges. À cette période, **Tencent** entre au capital, consolidant l’image d’Ubisoft comme acteur stratégique à l’international.  
+    Pourtant, dès **2019**, les résultats commencent à décevoir : plusieurs jeux ne répondent pas aux attentes, les retards s’accumulent, et la rentabilité s’effrite. Le titre entame alors une **chute prolongée** : en **cinq ans**, l’action perd plus de **80 % de sa valeur**. Depuis 2018, cela représente une **perte de capitalisation boursière d’environ 9 milliards d’euros**.
+    '''
+        st.markdown(paragraphe)
+    
+    with col2:
+        # pas de sous-titre; l’image s’aligne maintenant sur le début du paragraphe
+        img_path = _find_ubisoft_chart()
+        if img_path:
+            st.image(
+                img_path,
+                caption="Évolution historique du cours Ubisoft — Source : Google Finance (EPA : UBI)",
+                use_container_width=True
+            )
+        else:
+            st.error(
+                "Image introuvable. Place le fichier ubisoft_google_finance.png "
+                "ou Capture d'écran 2025-08-25 141139.png à la racine du projet "
+                "ou dans ./assets/, ./images/ ou ./static/."
+            )
+    
     st.divider()
+
+
+
 
     # ── PARTIE 2 : Performance relative au secteur (texte + courbes comparatives)
     st.markdown("""
@@ -1829,6 +1839,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
