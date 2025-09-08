@@ -978,7 +978,7 @@ elif page == "Analyse des performances des jeux Ubisoft":
         color_discrete_map={"Ubisoft": "#e53935", "Autres": "#6e6e6e"},
         
         labels={
-            "Jeux publiés": "Nombre de jeux publiés (somme 2018–2024)",
+            "Jeux publiés": "Nombre de jeux publiés ",
             "Revenu total (milliards)": "Revenu total (en milliards d'€)"
         }
     )
@@ -2209,6 +2209,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
