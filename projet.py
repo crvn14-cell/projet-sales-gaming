@@ -362,8 +362,8 @@ elif page == "Analyse financière comparative":
             margin=dict(l=40, r=20, t=60, b=40),
             title_x=0.5,
             legend_title_text="",
-            plot_bgcolor="white",
-            paper_bgcolor="white",
+            plot_bgcolor="black",
+            paper_bgcolor="black",
             bargap=0.25,
         )
         fig.update_xaxes(
@@ -2134,6 +2134,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
