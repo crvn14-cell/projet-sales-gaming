@@ -12,21 +12,26 @@ import plotly.express as px
 # ────────────────────────────────────────────────
 # APP STREAMLIT : DOSSIER UBISOFT
 # ────────────────────────────────────────────────
-st.set_page_config(page_title="Dossier Ubisoft", page_icon="🎮", layout="wide")
+with st.sidebar:
+    # Image au-dessus du menu
+    st.image("ubi.png", width=120)
 
-# 🔧 1) Ajoute "Conclusion" à la navigation (mets à jour ta liste existante)
-page = st.sidebar.radio(
-    st.sidebar.image("ubi.png", width=120),
-    "Aller vers :",
-    [
-        "Introduction",
-        "Analyse financière comparative",
-        "Analyse des performances des jeux Ubisoft",
-        "Perception et critique : la rupture avec les joueurs",
-        "Conclusion",  # ← ajoute cette ligne
-    ]
-)
+    # Titre du menu (facultatif)
+    st.markdown("**Aller vers :**")
 
+    # Le menu lui-même
+    page = st.radio(
+        label="",  # pas de label visible
+        options=[
+            "Introduction",
+            "Analyse financière comparative",
+            "Analyse des performances des jeux Ubisoft",
+            "Perception et critique : la rupture avec les joueurs",
+            "Conclusion",
+        ],
+        index=0,
+        label_visibility="collapsed",
+    )
 
 # ────────────────────────────────────────────────
 # Helpers communs
@@ -2143,6 +2148,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
