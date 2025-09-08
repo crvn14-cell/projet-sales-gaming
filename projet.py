@@ -362,8 +362,13 @@ elif page == "Analyse financière comparative":
             margin=dict(l=40, r=20, t=60, b=40),
             title_x=0.5,
             legend_title_text="",
+
             plot_bgcolor="white",
             paper_bgcolor="white",
+
+            plot_bgcolor="grey",
+            paper_bgcolor="grey",
+
             bargap=0.25,
         )
         fig.update_xaxes(
@@ -696,11 +701,19 @@ elif page == "Analyse financière comparative":
         **Ubisoft** emploie un volume de salariés **comparable** à celui d’**Activision Blizzard**, mais ses **performances financières** sont nettement **inférieures**.  
         Par exemple, **Electronic Arts** opère avec **environ un tiers de personnel en moins**, tout en générant un **chiffre d’affaires** et un **résultat net** largement supérieurs.
         """)
-    # Bulles : CA↔Résultat (taille = masse salariale) + Masse salariale ↔ Effectif
-    st.divider()
-    st.subheader(" Résultat net vs Chiffre d’affaires ")
-    st.caption("Les deux graphiques ci-dessous utilisent les mêmes données centralisées.")
 
+    # Bulles : CA↔Résultat (taille = masse salariale) + Masse salariale ↔ Effectif
+
+        
+# ─────────────────────────────────────────────────────────────
+    # Bulles (Plotly) — 2 onglets : Profit vs CA  |  Masse salariale vs Effectif
+    # ─────────────────────────────────────────────────────────────
+
+    st.divider()
+    st.subheader("Pour aller un peu plus loin...")
+    tabs = st.tabs(["💶 Résultat net vs Chiffre d’affaires", "👥 Masse salariale vs Effectif total"])
+    
+    # Normalisation des colonnes
     def _normalize_columns_for_panel(df_in: pd.DataFrame) -> pd.DataFrame:
         df = df_in.rename(columns={c: norm_col(c) for c in df_in.columns})
         ed_col = next((c for c in df.columns if c in
@@ -711,92 +724,131 @@ elif page == "Analyse financière comparative":
                     ed_col = c; break
         if ed_col is None:
             raise ValueError("Colonne éditeur introuvable.")
-        KEYWORDS = {
-            "ca": ["chiffre","sales","revenue","revenu","ca"],
-            "profit": ["resultat","résultat","net income","profit","benefice","bénéfice"],
-            "payroll": ["masse salariale","payroll","personnel","staff cost","wages","salaires","salary","coût du personnel","cout du personnel"],
-            "headcount": ["effectif","headcount","employe","employee","staff"]
-        }
+    
         def find_col(dfcols, words):
             return next((c for c in dfcols if any(w in c for w in words)), None)
-
-        an_col = next((c for c in df.columns if c in ["annee","year","date"] or "annee" in c or "year" in c or "date" in c), None)
-        ca_col      = find_col(df.columns, KEYWORDS["ca"])
-        profit_col  = find_col(df.columns, KEYWORDS["profit"])
-        payroll_col = find_col(df.columns, KEYWORDS["payroll"])
-        headc_col   = find_col(df.columns, KEYWORDS["headcount"])
-
+    
+        an_col      = next((c for c in df.columns if c in ["annee","year","date"] or "annee" in c or "year" in c or "date" in c), None)
+        ca_col      = find_col(df.columns, ["chiffre","sales","revenue","revenu","ca"])
+        profit_col  = find_col(df.columns, ["resultat","résultat","net income","profit","benefice","bénéfice"])
+        payroll_col = find_col(df.columns, ["masse salariale","payroll","personnel","staff cost","wages","salaires","salary","coût du personnel","cout du personnel"])
+        headc_col   = find_col(df.columns, ["effectif","headcount","employe","employee","staff"])
+    
         panel = pd.DataFrame({"Editeur": df[ed_col]})
-        if an_col is not None:
-            panel["annee"] = pd.to_datetime(df[an_col], errors="coerce").dt.year
-        else:
-            panel["annee"] = np.nan
-
-        if ca_col:      panel["ca"]       = df[ca_col].apply(clean_numeric)
-        if profit_col:  panel["profit"]   = df[profit_col].apply(clean_numeric)
-        if payroll_col: panel["payroll"]  = df[payroll_col].apply(clean_numeric)
-        if headc_col:   panel["headcount"]= df[headc_col].apply(clean_numeric)
-        for col in ["ca","profit","payroll","headcount"]:
-            if col not in panel.columns:
-                panel[col] = 0.0
+        panel["annee"]     = pd.to_datetime(df[an_col], errors="coerce").dt.year if an_col is not None else np.nan
+        panel["ca"]        = df[ca_col].apply(clean_numeric)      if ca_col      else 0.0
+        panel["profit"]    = df[profit_col].apply(clean_numeric)  if profit_col  else 0.0
+        panel["payroll"]   = df[payroll_col].apply(clean_numeric) if payroll_col else 0.0
+        panel["headcount"] = df[headc_col].apply(clean_numeric)   if headc_col   else 0.0
         return panel
-
+    
     panel = _normalize_columns_for_panel(df_finance.copy())
     panel = panel.dropna(subset=["Editeur"])
     if panel["annee"].notna().any():
         panel = panel[(panel["annee"].between(2018, 2024, inclusive="both")) | panel["annee"].isna()].copy()
-    for c in ["ca","profit","payroll","headcount"]:
-        panel[c] = panel[c].apply(clean_numeric)
-
-    colsA, colsB, colsC = st.columns([2,1,1])
-    with colsA:
-        editeurs_sel = st.multiselect("Éditeurs :", sorted(panel["Editeur"].unique()),
-                                      default=sorted(panel["Editeur"].unique()))
-    with colsB:
-        if panel["annee"].notna().any():
-            y_min2, y_max2 = int(panel["annee"].min()), int(panel["annee"].max())
-            an_range2 = st.slider("Années :", min_value=y_min2, max_value=y_max2, value=(max(2018,y_min2), min(2024,y_max2)), step=1)
-        else:
-            an_range2 = (2018, 2024)
-    with colsC:
-        size_scale = st.slider("Échelle des bulles (masse salariale)", 0.1, 2.0, 0.7, 0.1)
-        alpha_pts  = st.slider("Transparence", 0.2, 1.0, 0.8, 0.1)
-
-    if panel["annee"].notna().any():
-        dfp_panel = panel[(panel["Editeur"].isin(editeurs_sel)) &
-                          (panel["annee"].between(an_range2[0], an_range2[1]))].copy()
-    else:
-        dfp_panel = panel[panel["Editeur"].isin(editeurs_sel)].copy()
-
-    if dfp_panel.empty:
-        st.warning("Aucune donnée pour la sélection actuelle.")
-    else:
-        fig_b, ax_b = plt.subplots(figsize=(9.5, 6.5))
-        for ed in sorted(dfp_panel["Editeur"].unique()):
-            d = dfp_panel[dfp_panel["Editeur"] == ed]
-            ax_b.scatter(d["ca"], d["profit"], s=np.sqrt(d["payroll"].clip(lower=0))*(10*size_scale),
-                         alpha=alpha_pts, label=ed)
-        ax_b.set_title("Résultat net (M€) en fonction du chiffre d’affaires (M€) — taille = masse salariale", fontsize=13)
-        ax_b.set_xlabel("Chiffre d’affaires (M€)")
-        ax_b.set_ylabel("Résultat net (M€)")
-        ax_b.grid(True, linestyle="--", alpha=0.4)
-        ax_b.legend(ncol=2, fontsize=9, frameon=True)
-        st.pyplot(fig_b)
-
-        st.subheader(" Masse salariale vs Effectif total (2018–2024)")
-        fig_c, ax_c = plt.subplots(figsize=(9.5, 6.0))
-        for ed in sorted(dfp_panel["Editeur"].unique()):
-            d = dfp_panel[dfp_panel["Editeur"] == ed]
-            ax_c.scatter(d["headcount"], d["payroll"], alpha=alpha_pts, label=ed)
-        ax_c.set_title("Coût de la masse salariale (M€) en fonction de l’effectif total", fontsize=13)
-        ax_c.set_xlabel("Effectif total (personnes)")
-        ax_c.set_ylabel("Masse salariale (M€)")
-        ax_c.grid(True, linestyle="--", alpha=0.4)
-        ax_c.legend(ncol=2, fontsize=9, frameon=True)
-        st.pyplot(fig_c)
-
-  
     
+    # Palette de couleurs FIXE par éditeur (contrastée)
+    COLOR_MAP = {
+        "Ubisoft": "#E53935",                          # rouge vif
+        "Activision Blizzard": "#1F77B4",              # bleu foncé
+        "Electronic Arts": "#2CA02C",                  # vert
+        "Nintendo": "#FF7F0E",                         # orange
+        "Sony Interactive Entertainment": "#9467BD",   # violet
+        "Take Two": "#8C564B",                         # brun
+        "Bandai Namco": "#17BECF",                     # turquoise
+    }
+    DEFAULT_COLORS = ["#BCBD22", "#7F7F7F", "#AEC7E8", "#FF9896", "#98DF8A"]
+    
+    def _get_color_map_for(df, label_col="Editeur"):
+        unique = list(dict.fromkeys(df[label_col].astype(str)))
+        mapping = {}
+        extra_i = 0
+        for lab in unique:
+            mapping[lab] = COLOR_MAP.get(lab, DEFAULT_COLORS[extra_i % len(DEFAULT_COLORS)])
+            extra_i += int(lab not in COLOR_MAP)
+        return mapping
+    
+    # Sélecteurs communs (sans curseur de taille des bulles)
+    def _selectors(prefix: str):
+        colA, colB = st.columns([2,1])
+        with colA:
+            editeurs_sel = st.multiselect(
+                "Éditeurs :", sorted(panel["Editeur"].unique()),
+                default=sorted(panel["Editeur"].unique()), key=f"{prefix}_eds"
+            )
+        with colB:
+            if panel["annee"].notna().any():
+                ymin, ymax = int(panel["annee"].min()), int(panel["annee"].max())
+                years = st.slider("Années :", min_value=ymin, max_value=ymax,
+                                  value=(max(2018, ymin), min(2024, ymax)), step=1, key=f"{prefix}_years")
+            else:
+                years = (2018, 2024)
+        return editeurs_sel, years
+    
+    # ========== Onglet 1 : Résultat net vs Chiffre d’affaires ==========
+    with tabs[0]:
+        st.caption("Les deux axes sont en M€ ; la **taille** des bulles est proportionnelle à la **masse salariale**.")
+        eds, years = _selectors("pvsca")
+    
+        if panel["annee"].notna().any():
+            dfp = panel[(panel["Editeur"].isin(eds)) & (panel["annee"].between(years[0], years[1]))].copy()
+        else:
+            dfp = panel[panel["Editeur"].isin(eds)].copy()
+    
+        if dfp.empty:
+            st.warning("Aucune donnée pour la sélection actuelle.")
+        else:
+            # Taille = masse salariale
+            dfp["taille_bulle"] = np.sqrt(dfp["payroll"].clip(lower=0)) * 12
+    
+            color_map = _get_color_map_for(dfp, "Editeur")
+            fig = px.scatter(
+                dfp, x="ca", y="profit", color="Editeur", size="taille_bulle",
+                color_discrete_map=color_map,
+                hover_data={"ca":":,.0f", "profit":":,.0f", "payroll":":,.0f", "taille_bulle":False, "Editeur":True},
+                labels={"ca":"Chiffre d’affaires (M€)", "profit":"Résultat net (M€)", "Editeur":""},
+                title="Résultat net (M€) en fonction du chiffre d’affaires (M€) — taille = masse salariale"
+            )
+            fig.update_traces(marker=dict(line=dict(width=0.5, color="#333")))
+            fig.update_layout(
+                height=400, margin=dict(l=50, r=30, t=60, b=50),
+                legend_title_text="",
+                plot_bgcolor="black", paper_bgcolor="black"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+    
+    # ========== Onglet 2 : Masse salariale vs Effectif total ==========
+    with tabs[1]:
+        eds2, years2 = _selectors("pay_vs_head")
+    
+        if panel["annee"].notna().any():
+            dfp2 = panel[(panel["Editeur"].isin(eds2)) & (panel["annee"].between(years2[0], years2[1]))].copy()
+        else:
+            dfp2 = panel[panel["Editeur"].isin(eds2)].copy()
+    
+        if dfp2.empty:
+            st.warning("Aucune donnée pour la sélection actuelle.")
+        else:
+            # Taille = chiffre d’affaires
+            dfp2["taille_bulle"] = np.sqrt(dfp2["ca"].clip(lower=0)) * 12
+    
+            color_map2 = _get_color_map_for(dfp2, "Editeur")
+            fig2 = px.scatter(
+                dfp2, x="headcount", y="payroll", color="Editeur", size="taille_bulle",
+                color_discrete_map=color_map2,
+                hover_data={"headcount":":,.0f", "payroll":":,.0f", "ca":":,.0f", "taille_bulle":False, "Editeur":True},
+                labels={"headcount":"Effectif total (personnes)", "payroll":"Masse salariale (M€)", "Editeur":""},
+                title="Coût de la masse salariale (M€) en fonction de l’effectif total — taille = chiffre d’affaires"
+            )
+            fig2.update_traces(marker=dict(line=dict(width=0.5, color="#333")))
+            fig2.update_layout(
+                height=400, margin=dict(l=50, r=30, t=60, b=50),
+                legend_title_text="",
+                plot_bgcolor="black", paper_bgcolor="black"
+            )
+            st.plotly_chart(fig2, use_container_width=True)
+    
+
 # ────────────────────────────────────────────────
 # PAGE 3 : ANALYSE DES PERFORMANCES DES JEUX UBISOFT
 # ────────────────────────────────────────────────
@@ -1332,42 +1384,68 @@ elif page == "Perception et critique : la rupture avec les joueurs":
     st.dataframe(stats, use_container_width=True)
 
     # ───────── Graphiques : Presse vs Joueurs
-    st.subheader(" Comparaison des distributions")
+    st.subheader("Comparaison des distributions")
+    
     x_min, x_max = 0, 10
-    sns.set_style("whitegrid")
-
-    fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
-
-    # Presse
-    sns.histplot(df_notes["Press_Score"], bins=20, kde=True, color="#4CAF50", ax=axs[0])
-    axs[0].set_title("Distribution des notes de la Presse (sur 10)", fontsize=12)
-    axs[0].set_ylabel("Nombre de jeux")
-    axs[0].set_xlim(x_min, x_max)
-
-    # Joueurs
-    sns.histplot(df_notes["Users_Score"], bins=20, kde=True, color="#87CEEB", ax=axs[1])
-    axs[1].set_title("Distribution des notes utilisateurs (sur 10)", fontsize=12)
-    axs[1].set_xlabel("Notes")
-    axs[1].set_ylabel("Nombre de jeux")
-    axs[1].set_xlim(x_min, x_max)
-
-    plt.tight_layout()
-    st.pyplot(fig)
+    
+    # Distribution Presse
+    fig_press = px.histogram(
+        df_notes,
+        x="Press_Score",
+        nbins=20,
+        opacity=0.75,
+        color_discrete_sequence=["#4CAF50"],
+        title="Distribution des notes de la Presse (sur 10)"
+    )
+    fig_press.update_traces(marker_line_width=0.5, marker_line_color="white")
+    fig_press.update_layout(
+        height=300,
+        margin=dict(l=40, r=20, t=60, b=40),
+        bargap=0.05,
+        xaxis=dict(range=[x_min, x_max]),
+        yaxis_title="Nombre de jeux",
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+    )
+    st.plotly_chart(fig_press, use_container_width=True)
+    
+    # Distribution Utilisateurs
+    fig_users = px.histogram(
+        df_notes,
+        x="Users_Score",
+        nbins=20,
+        opacity=0.75,
+        color_discrete_sequence=["#87CEEB"],
+        title="Distribution des notes utilisateurs (sur 10)"
+    )
+    fig_users.update_traces(marker_line_width=0.5, marker_line_color="white")
+    fig_users.update_layout(
+        height=300,
+        margin=dict(l=40, r=20, t=60, b=40),
+        bargap=0.05,
+        xaxis=dict(range=[x_min, x_max]),
+        xaxis_title="Notes",
+        yaxis_title="Nombre de jeux",
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+    )
+    st.plotly_chart(fig_users, use_container_width=True)
 
     # ───────── Analyse rapide
-    st.subheader(" Analyse")
+    st.subheader("Analyse")
     st.markdown("""
-    - **Presse** : notes majoritairement concentrées entre **6 et 8**, reflétant une évaluation globalement positive.
-    - **Joueurs** : distribution plus **étalée**, avec davantage de notes très basses → signe d'une **polarisation**.
+    - **Presse** : notes majoritairement concentrées entre **6 et 8**, reflétant une évaluation globalement positive.  
+    - **Joueurs** : distribution plus **étalée**, avec davantage de notes très basses → signe d'une **polarisation**.  
     - Cet écart révèle une différence de perception : Ubisoft convainc la presse mais divise parfois sa communauté.
     """)
-    # ——— Détection Year + agrégations annuelles
+    
     import unicodedata, re
+    
     def _norm(s: str) -> str:
         s = unicodedata.normalize("NFKD", str(s))
         s = "".join(c for c in s if not unicodedata.combining(c))
         return re.sub(r"[\s\-_\/]+", " ", s).strip().lower()
-
+    
     def _extract_year_column(df: pd.DataFrame) -> pd.Series | None:
         # 1) colonnes de date
         for c in df.columns:
@@ -1383,7 +1461,7 @@ elif page == "Perception et critique : la rupture avec les joueurs":
                 if ((y >= 1990) & (y <= 2035)).sum() > 0:
                     return y
         return None
-
+    
     year_series = _extract_year_column(raw)
     if year_series is None:
         st.warning("Aucune colonne de date/année reconnue : les graphiques temporels ne peuvent pas être tracés.")
@@ -1394,65 +1472,103 @@ elif page == "Perception et critique : la rupture avec les joueurs":
             "Users_Score": df_notes["Users_Score"].values,
         }).dropna()
         work = work[(work["Year"] >= 1995) & (work["Year"] <= 2035)]
-
+    
         yearly = (work.groupby("Year", as_index=False)
                         .agg(Press=("Press_Score","mean"),
                              Users=("Users_Score","mean"))
                         .sort_values("Year"))
+    
+        # ——— Graphique (Plotly) : courbes annuelles
+        st.subheader("Notes moyennes par année — Presse vs Joueurs")
+    
+        yearly_long = yearly.melt(
+            id_vars="Year",
+            value_vars=["Press", "Users"],
+            var_name="Source",
+            value_name="Note"
+        ).replace({"Press": "Presse", "Users": "Joueurs"})
+    
+        COLOR_LINE = {"Presse": "#2E7D32", "Joueurs": "#FB8C00"}
+    
+        fig_line = px.line(
+            yearly_long, x="Year", y="Note", color="Source", markers=True,
+            color_discrete_map=COLOR_LINE,
+            labels={"Year": "Année de sortie", "Note": "Note moyenne (sur 10)", "Source": "Source"},
+            title="Notes moyennes par année — Presse vs Joueurs"
+        )
+    
+        fig_line.update_layout(
+            height=420,
+            margin=dict(l=60, r=40, t=60, b=60),
+            legend_title_text="Source",
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+        )
+        fig_line.update_xaxes(showline=True, linecolor="#000", gridcolor="rgba(0,0,0,.15)")
+        fig_line.update_yaxes(showline=True, linecolor="#000", gridcolor="rgba(0,0,0,.15)")
+    
+        # repère "décrochage" en 2014
+        if yearly["Year"].min() <= 2014 <= yearly["Year"].max():
+            fig_line.add_vline(x=2014, line_width=2, line_dash="dash", line_color="#757575")
+            fig_line.add_annotation(
+                x=2014 + 0.3, y=0.06, xref="x", yref="paper",
+                text="Décrochage des notes des joueurs",
+                showarrow=False, font=dict(color="#616161", size=12)
+            )
+    
+        st.plotly_chart(fig_line, use_container_width=True)
+    
+    # ——— Graphique 2 (Plotly) : écart moyen annuel (Users − Press)
+    st.subheader("Écart moyen entre notes utilisateurs et presse")
+    
+    delta = yearly.copy()
+    delta["Diff"] = delta["Users"] - delta["Press"]
+    
+    # Palette rouge dégradée pour les valeurs négatives
+    reds_palette = px.colors.sequential.Reds
+    neg_vals = delta["Diff"].clip(upper=0).abs()
+    neg_norm = (neg_vals / neg_vals.max()).fillna(0.0)
+    
+    def red_shade(nn: float) -> str:
+        # nn ∈ [0,1] → indice dans la palette Reds, en évitant les rouges trop clairs
+        idx = int(round((0.40 + 0.60 * nn) * (len(reds_palette) - 1)))
+        return reds_palette[max(0, min(idx, len(reds_palette) - 1))]
+    
+    bar_colors = [
+        "#1f77b4" if d >= 0 else red_shade(nn)
+        for d, nn in zip(delta["Diff"], neg_norm)
+    ]
+    
+    fig_bar = px.bar(
+        delta, x="Year", y="Diff",
+        labels={"Year": "Année de sortie", "Diff": "Score delta (Users − Press)"},
+        title="Écart moyen entre notes utilisateurs et presse"
+    )
+    fig_bar.update_traces(
+        marker_color=bar_colors,
+        hovertemplate="Année=%{x}<br>Delta (Users − Presse): %{y:.2f}<extra></extra>"
+    )
+    
+    # Ligne horizontale à 0
+    fig_bar.add_hline(y=0, line_color="black", line_width=1)
+    
+    # Mise en forme compacte
+    fig_bar.update_layout(
+        height=420, margin=dict(l=60, r=40, t=60, b=50),
+        plot_bgcolor="white", paper_bgcolor="white",
+        legend_title_text="Interprétation des couleurs",
+    )
+    fig_bar.update_xaxes(showline=True, linecolor="#000", gridcolor="rgba(0,0,0,.15)")
+    fig_bar.update_yaxes(showline=True, linecolor="#000", gridcolor="rgba(0,0,0,.15)")
+    
+    # Légende explicative (traces factices)
+    fig_bar.add_bar(x=[None], y=[None], marker_color="#1f77b4",
+                    name="Joueurs plus généreux que la presse", showlegend=True)
+    fig_bar.add_bar(x=[None], y=[None], marker_color=reds_palette[-2],
+                    name="Joueurs plus critiques que la presse", showlegend=True)
+    
+    st.plotly_chart(fig_bar, use_container_width=True)
 
-        # ——— Graphique 1 : courbes annuelles
-        st.subheader(" Notes moyennes par année — Presse vs Joueurs")
-        fig_line, axl = plt.subplots(figsize=(10, 5))
-        axl.plot(yearly["Year"], yearly["Press"], marker="o", linewidth=2.2, label="Presse", color="#2E7D32")
-        axl.plot(yearly["Year"], yearly["Users"], marker="o", linewidth=2.2, label="Joueurs", color="#FB8C00")
-        axl.set_xlabel("Année de sortie"); axl.set_ylabel("Note moyenne (sur 10)")
-        axl.grid(True, linestyle="--", alpha=0.35)
-        axl.legend(title="Source", frameon=True)
-
-        # repère « décrochage » (si l'année est dans la série)
-        if (yearly["Year"] >= 2014).any() and (yearly["Year"] <= 2014).any():
-            axl.axvline(2014, color="#757575", linestyle="--", alpha=0.6)
-            ymin, ymax = axl.get_ylim()
-            axl.text(2014 + 0.2, ymin + 0.05*(ymax-ymin),
-                     "Décrochage des notes des joueurs", fontsize=9, color="#616161")
-
-        st.pyplot(fig_line)
-        # ——— Graphique 2 : écart moyen annuel (Users − Press)
-        st.subheader(" Écart moyen entre notes utilisateurs et presse ")
-        delta = yearly.copy()
-        delta["Diff"] = delta["Users"] - delta["Press"]
-
-        # couleurs: bleu si positif, dégradé de rouge si négatif
-        import matplotlib as mpl
-        reds = mpl.cm.get_cmap("Reds")
-        neg_vals = delta["Diff"].clip(upper=0).abs()
-        if neg_vals.max() == 0:
-            neg_norm = np.zeros_like(neg_vals)
-        else:
-            neg_norm = neg_vals / neg_vals.max()
-
-        colors = []
-        for d, nn in zip(delta["Diff"], neg_norm):
-            if d >= 0:
-                colors.append("#1f77b4")          # bleu (joueurs plus généreux)
-            else:
-                colors.append(reds(0.35 + 0.55*nn))  # rouge plus sombre si l’écart est grand
-
-        fig_bar, axb = plt.subplots(figsize=(10, 5))
-        axb.bar(delta["Year"], delta["Diff"], color=colors, width=0.8, edgecolor="none")
-        axb.axhline(0, color="black", linewidth=1)
-        axb.set_xlabel("Année de sortie"); axb.set_ylabel("Score delta (Users − Press)")
-        axb.grid(axis="y", linestyle="--", alpha=0.35)
-
-        # petite légende manuelle
-        from matplotlib.patches import Patch
-        legend_elems = [
-            Patch(facecolor="#1f77b4", label="Joueurs plus généreux que la presse"),
-            Patch(facecolor=reds(0.8), label="Joueurs plus critiques que la presse"),
-        ]
-        axb.legend(handles=legend_elems, title="Interprétation des couleurs", frameon=True)
-
-        st.pyplot(fig_bar)
     st.markdown("""
 
 
@@ -1479,15 +1595,15 @@ utilisateurs et le produit livré, alimenté par des éléments récurrents dans
     import re, unicodedata
     import matplotlib.pyplot as plt
     import seaborn as sns
-
+    
     st.subheader(" Top & Flop Ubisoft – Score moyen global (presse + utilisateurs)")
-
+    
     # --- Helpers pour retrouver les colonnes "Name", "Platform" et "Year" si elles ne sont pas déjà dans df_notes
     def _norm(s: str) -> str:
         s = unicodedata.normalize("NFKD", str(s))
         s = "".join(c for c in s if not unicodedata.combining(c))
         return re.sub(r"[\s\-_\/]+", " ", s).strip().lower()
-
+    
     def _extract_year_column(df: pd.DataFrame) -> pd.Series | None:
         # 1) colonnes de date
         for c in df.columns:
@@ -1503,10 +1619,10 @@ utilisateurs et le produit livré, alimenté par des éléments récurrents dans
                 if ((y >= 1990) & (y <= 2035)).sum() > 0:
                     return y
         return None
-
+    
     # On part de df_notes (déjà nettoyé + ramené sur 10) et du DataFrame brut 'raw' lu en début de page 4
     df_plot = df_notes.copy()
-
+    
     # Ajoute Year si manquant
     if "Year" not in df_plot.columns:
         y = _extract_year_column(raw)
@@ -1515,7 +1631,7 @@ utilisateurs et le produit livré, alimenté par des éléments récurrents dans
         else:
             st.error("Impossible d’identifier la colonne Année. Ajoute une colonne 'Year' ou une date de sortie dans le CSV.")
             st.stop()
-
+    
     # Ajoute Name si manquant
     if "Name" not in df_plot.columns:
         name_col = next((c for c in raw.columns if _norm(c) in {"name","titre","title","game","jeu"} 
@@ -1524,40 +1640,40 @@ utilisateurs et le produit livré, alimenté par des éléments récurrents dans
             df_plot["Name"] = raw[name_col]
         else:
             df_plot["Name"] = [f"Jeu {i}" for i in range(len(df_plot))]
-
+    
     # Ajoute Platform si manquant
     if "Platform" not in df_plot.columns:
         plat_col = next((c for c in raw.columns if any(k in _norm(c) for k in ["platform","console","system"])), None)
         df_plot["Platform"] = raw[plat_col] if plat_col else "N/A"
-
+    
     # Ajoute Score_Avg si manquant
     if "Score_Avg" not in df_plot.columns:
         df_plot["Score_Avg"] = df_plot[["Press_Score","Users_Score"]].mean(axis=1)
-
+    
     # --- Ton code adapté à Streamlit ---
     # Filtrer les jeux sortis depuis 2015
     df_notes_recent = df_plot[df_plot["Year"] >= 2015].copy()
-
+    
     # Top 10 des jeux Ubisoft selon score_avg
     top_avg = (df_notes_recent.sort_values(by="Score_Avg", ascending=False)
                .drop_duplicates(subset=["Name","Platform"])
                .head(10))
-
+    
     # Flop 10 des jeux Ubisoft selon score_avg
     flop_avg = (df_notes_recent.sort_values(by="Score_Avg", ascending=True)
                 .drop_duplicates(subset=["Name","Platform"])
                 .head(10))
-
+    
     # Fusion pour plot
     topflop_avg = pd.concat([top_avg.assign(cat="Top"), flop_avg.assign(cat="Flop")], ignore_index=True)
-
+    
     if topflop_avg.empty:
         st.warning("Aucune donnée après filtrage (Year ≥ 2015). Vérifie les colonnes Year/Name/Platform.")
     else:
         # Tri de l’affichage (du plus faible au plus fort, puis inversion de l’axe Y pour avoir les meilleurs en haut)
         order_names = topflop_avg.sort_values("Score_Avg", ascending=True)["Name"]
-
-        fig, ax = plt.subplots(figsize=(12, 8))
+    
+        fig, ax = plt.subplots(figsize=(12, 6))
         sns.barplot(
             data=topflop_avg,
             y="Name",
@@ -1574,16 +1690,19 @@ utilisateurs et le produit livré, alimenté par des éléments récurrents dans
         ax.grid(axis="x", linestyle="--", alpha=0.35)
         ax.legend(title="Catégorie", frameon=True)
         ax.invert_yaxis()  # meilleurs en haut
-
+    
         # Ajout des valeurs au bout des barres
         for p in ax.patches:
             width = p.get_width()
             y = p.get_y() + p.get_height() / 2
             ax.text(width + 0.05, y, f"{width:.1f}", va="center", fontsize=9)
-
+    
         plt.tight_layout()
         st.pyplot(fig)
+    
     # ——— Texte d'analyse : Top & Flop Ubisoft 2015–2025
+
+
     st.markdown("""
 Sur la période **2015–2025**, l’étude des **notes moyennes globales** (*presse + utilisateurs*) met en évidence une
 **tendance préoccupante** : les meilleurs jeux Ubisoft récents ne sont pas ceux qui bénéficient du plus fort
@@ -1735,7 +1854,7 @@ Beaucoup de joueurs font explicitement référence à *Black Flag*, renforçant 
         # --- Génération du WordCloud (style projet)
         wordcloud = WordCloud(
             width=1200,
-            height=700,
+            height=500,
             background_color="white",
             stopwords=custom_stopwords,
             color_func=color_function
@@ -1757,17 +1876,17 @@ Beaucoup de joueurs font explicitement référence à *Black Flag*, renforçant 
 
     # --- Titre de la section
     st.markdown("## 3.4. Un désalignement total entre budget, durée et résultat")
-
+    
     # ——— Texte introductif (au-dessus du graphique budget)
     st.markdown("""
-Ce qui rend **Skull & Bones** encore plus problématique, c’est la **disproportion**
-entre les **moyens engagés** et la **qualité perçue**.  
-Avec un **budget estimé à plus de 200 millions de dollars** *(voire **500 M$** selon certaines sources,
-notamment d’anciens employés d’Ubisoft)*, le jeu se classe parmi les **plus ambitieux de l’industrie**,  
-aux côtés de productions ayant connu un **succès énorme** comme **GTA V** ou **Call of Duty: Modern Warfare**.
-""")
-
-    # --- Données fictives de l'étude AAA (à adapter selon tes fichiers CSV si nécessaire)
+    Ce qui rend **Skull & Bones** encore plus problématique, c’est la **disproportion**
+    entre les **moyens engagés** et la **qualité perçue**.  
+    Avec un **budget estimé à plus de 200 millions de dollars** *(voire **500 M$** selon certaines sources,
+    notamment d’anciens employés d’Ubisoft)*, le jeu se classe parmi les **plus ambitieux de l’industrie**,  
+    aux côtés de productions ayant connu un **succès énorme** comme **GTA V** ou **Call of Duty: Modern Warfare**.
+    """)
+    
+    # --- Données fictives de l'étude AAA
     data_budget = {
         "Jeu": [
             "Assassin's Creed II", "Far Cry 3", "The Last of Us Part II",
@@ -1777,36 +1896,59 @@ aux côtés de productions ayant connu un **succès énorme** comme **GTA V** ou
         ],
         "Budget": [80, 90, 110, 120, 130, 150, 200, 220, 265, 350]
     }
-
     df_budget = pd.DataFrame(data_budget)
-
-    # --- Création du graphique
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(
-        data=df_budget,
+    
+    # --- Graphique en Plotly
+    colors = ["#fdae6b" if jeu == "Skull and Bones" else "#6baed6" for jeu in df_budget["Jeu"]]
+    
+    fig = px.bar(
+        df_budget,
         y="Jeu",
         x="Budget",
-        palette=["#6baed6" if jeu != "Skull and Bones" else "#fdae6b" for jeu in df_budget["Jeu"]],
-        ax=ax
+        orientation="h",
+        title="Budgets de production des jeux AAA",
+        labels={"Budget": "Budget (en millions $)", "Jeu": "Jeu"},
+        color=df_budget["Jeu"],
+        color_discrete_map={jeu: col for jeu, col in zip(df_budget["Jeu"], colors)}
     )
-
-    # --- Ligne rouge verticale sur le budget de Skull & Bones
-    ax.axvline(200, color="red", linestyle="--", linewidth=2, label="Budget Skull & Bones")
-
-    # --- Personnalisation graphique
-    ax.set_title("Budgets de production des jeux AAA", fontsize=14, fontweight="bold")
-    ax.set_xlabel("Budget (en millions $)")
-    ax.set_ylabel("Jeu")
-    ax.legend()
-
-    # --- Affichage
-    st.pyplot(fig)
+    
+    # --- Ligne rouge verticale
+    fig.add_vline(
+        x=200, line=dict(color="red", width=2, dash="dash"),
+    )
+    
+    # --- Annotation alignée avec la barre "Skull and Bones"
+    fig.add_annotation(
+        x=205,  # léger décalage à droite de la ligne
+        y="Skull and Bones",
+        text="Budget Skull & Bones",
+        showarrow=False,
+        font=dict(color="red", size=12),
+        xanchor="left",
+        yanchor="middle"
+    )
+    
+    # --- Mise en forme
+    fig.update_layout(
+        height=500,
+        margin=dict(l=80, r=40, t=60, b=40),
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        showlegend=False
+    )
+    fig.update_xaxes(showline=True, linecolor="black", gridcolor="rgba(0,0,0,.1)")
+    fig.update_yaxes(showline=False, gridcolor="rgba(0,0,0,0)")
+    
+    # --- Affichage Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+    
     # ——— Texte d’interprétation (après le graphique budget)
     st.markdown("""
-En comparant la **durée de développement**, le **budget** et la **note Metacritic** de ces jeux,
-on observe que **Skull & Bones** se positionne à l’**extrême** : **coûteux**, **le plus long à produire**,
-avec **le score critique le plus bas**.
-""")
+    En comparant la **durée de développement**, le **budget** et la **note Metacritic** de ces jeux,
+    on observe que **Skull & Bones** se positionne à l’**extrême** : **coûteux**, **le plus long à produire**,
+    avec **le score critique le plus bas**.
+    """)
+
     # ────────────────────────────────────────────────
     # Durée de Développement vs Note Metacritic (bulles = budget) — version Seaborn/Matplotlib pour Streamlit
     # ────────────────────────────────────────────────
@@ -1816,11 +1958,10 @@ avec **le score critique le plus bas**.
     import numpy as np
     import streamlit as st
 
-    st.subheader(" Durée de Développement vs Note Metacritic — 💰 Taille des bulles = Budget de développement")
-
+    st.subheader(" Durée de Développement vs Note Metacritic — Taille des bulles = Budget de développement")
+    
     @st.cache_data
     def load_aaa():
-        # Charge ton fichier tel quel (mêmes noms de colonnes que dans ton code)
         tries = [
             dict(sep=",", encoding="utf-8"),
             dict(sep=";", encoding="utf-8"),
@@ -1834,81 +1975,104 @@ avec **le score critique le plus bas**.
         for path in ["jeux_AAA_metacritic_only.csv", "data/jeux_AAA_metacritic_only.csv"]:
             for opt in tries:
                 try:
-                    df = pd.read_csv(path, engine="python", **opt)
-                    return df
+                    return pd.read_csv(path, engine="python", **opt)
                 except Exception as e:
                     last_err = e
         raise RuntimeError(f"Impossible de lire le CSV : {last_err}")
-
-    # ➜ On suppose que ton CSV a bien les colonnes : title, publisher, budget_musd, development_years, metacritic_score
+    
+    # Colonnes attendues
     df_full = load_aaa()
     required = {"title", "publisher", "budget_musd", "development_years", "metacritic_score"}
     if not required.issubset(df_full.columns):
         st.error(f"Colonnes attendues manquantes. Il faut au minimum : {sorted(required)}")
         st.stop()
-
-    # — Graphique identique à ton code
-    plt.figure(figsize=(14, 8))
-    sns.set(style="whitegrid", font_scale=1.1)
-
-    # Palette dynamique basée sur le nombre d'éditeurs
-    n_publishers = df_full["publisher"].nunique()
-    palette = sns.color_palette("tab10", n_colors=n_publishers)
-
-    plot = sns.scatterplot(
-        data=df_full,
+    
+    # Nettoyage simple
+    df_plot = df_full.copy()
+    df_plot = df_plot.dropna(subset=["development_years", "metacritic_score", "budget_musd", "publisher", "title"])
+    
+    # Mise à l’échelle des bulles (Plotly: sizemode='area' + sizeref)
+    size_max = 52  # taille visuelle max
+    max_budget = max(1.0, df_plot["budget_musd"].max())
+    sizeref = 2.0 * max_budget / (size_max**2)  # formule Plotly officielle
+    
+    import plotly.express as px
+    
+    fig = px.scatter(
+        df_plot,
         x="development_years",
         y="metacritic_score",
-        hue="publisher",
         size="budget_musd",
-        sizes=(200, 2000),
-        alpha=0.9,
-        edgecolor="black",
-        linewidth=0.5,
-        palette=palette,
-        legend="brief"
+        color="publisher",
+        text="title",                          # nom au centre de la bulle
+        hover_name="title",
+        hover_data={
+            "publisher": True,
+            "budget_musd": ":.0f",
+            "development_years": ":.1f",
+            "metacritic_score": ":.0f",
+        },
+        labels={
+            "development_years": "Durée de développement (années)",
+            "metacritic_score": "Note Metacritic",
+            "publisher": "Éditeur",
+            "budget_musd": "Budget (M$)",
+        },
+        template="simple_white",
     )
-
-    # Titres des jeux au centre des bulles (comme ton code)
-    for _, row in df_full.iterrows():
-        plt.text(
-            row["development_years"],
-            row["metacritic_score"],
-            row["title"],
-            fontsize=10,
-            ha="center",
-            va="center",
-            color="black",
-            weight="bold",
-        )
-
-    # Mise en page (identique à l’esprit de ton snippet)
-    plt.title("🎮 Durée de Développement vs Note Metacritic\n💰 Taille des bulles = Budget de développement",
-              fontsize=16, weight="bold")
-    plt.xlabel("Durée de développement (années)", fontsize=12)
-    plt.ylabel("Note Metacritic", fontsize=12)
-    plt.grid(True, linestyle="--", alpha=0.6)
-
-    # Légendes sur la droite
-    plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left",
-               title="Éditeur / Budget", borderaxespad=1)
-
-    # Petites marges pour éviter de couper les bulles/labels
-    plt.margins(x=0.08, y=0.06)
-
-    # Optionnel : forcer un peu de marge en X pour que tout soit bien “entier”
-    xmin, xmax = df_full["development_years"].min(), df_full["development_years"].max()
-    plt.xlim(xmin - 0.5, xmax + 1.0)
-
-    plt.tight_layout()
-
-    # ➜ Affichage Streamlit
-    st.pyplot(plt.gcf(), clear_figure=True)
+    
+    # Style des marqueurs & texte
+    fig.update_traces(
+        mode="markers+text",
+        textposition="middle center",
+        textfont=dict(size=10, color="black"),
+        marker=dict(
+            line=dict(width=0.6, color="black"),
+            opacity=0.9,
+            sizemode="area",
+            sizeref=sizeref,
+            sizemin=6
+        ),
+        hovertemplate="<b>%{hovertext}</b><br>" +
+                      "Éditeur: %{customdata[0]}<br>" +
+                      "Budget: %{customdata[1]:,.0f} M$<br>" +
+                      "Durée: %{customdata[2]:.1f} ans<br>" +
+                      "Metacritic: %{customdata[3]:.0f}<extra></extra>"
+    )
+    
+    # Axes & mise en page
+    xmin, xmax = float(df_plot["development_years"].min()), float(df_plot["development_years"].max())
+    yrmin, yrmax = float(df_plot["metacritic_score"].min()), float(df_plot["metacritic_score"].max())
+    
+    fig.update_xaxes(
+        range=[xmin - 0.5, xmax + 1.0],
+        showline=True, linecolor="black",
+        gridcolor="rgba(0,0,0,.12)"
+    )
+    fig.update_yaxes(
+        range=[max(0, yrmin - 3), min(100, yrmax + 3)],
+        showline=True, linecolor="black",
+        gridcolor="rgba(0,0,0,.12)"
+    )
+    
+    fig.update_layout(
+        title=dict(
+            text="Durée de Développement vs Note Metacritic — <b>Taille des bulles = Budget</b>",
+            x=0.02, xanchor="left"
+        ),
+        height=560,
+        margin=dict(l=60, r=20, t=70, b=50),
+        legend_title_text="Éditeur / Budget",
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
     st.markdown("""
-Ce graphique met en lumière un décalage profond entre effort, coût et valeur livrée. Il constitue un cas d’école d’échec produit, qui interroge autant la stratégie d’Ubisoft que sa capacité à piloter efficacement des projets à long terme.
-""")
-
+    Ce graphique met en lumière un décalage profond entre effort, coût et valeur livrée. Il constitue un cas d’école d’échec produit,
+    qui interroge autant la stratégie d’Ubisoft que sa capacité à piloter efficacement des projets à long terme.
+    """)
     st.divider()
+
 
 # ────────────────────────────────────────────────
 # PAGE 5 : CONCLUSION — texte identique au screenshot
@@ -1979,6 +2143,38 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
