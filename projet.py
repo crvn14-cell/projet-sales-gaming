@@ -366,8 +366,7 @@ elif page == "Analyse financière comparative":
             plot_bgcolor="white",
             paper_bgcolor="white",
 
-            plot_bgcolor="black",
-            paper_bgcolor="black",
+          
 
             bargap=0.25,
         )
@@ -2143,6 +2142,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
