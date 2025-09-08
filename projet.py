@@ -16,7 +16,6 @@ st.set_page_config(page_title="Dossier Ubisoft", page_icon="🎮", layout="wide"
 
 # 🔧 1) Ajoute "Conclusion" à la navigation (mets à jour ta liste existante)
 page = st.sidebar.radio(
-    st.sidebar.image("titre.jpeg", width=120),
     "Aller vers :",
     [
         "Introduction",
@@ -2143,6 +2142,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
