@@ -1158,14 +1158,77 @@ elif page == "Analyse des performances des jeux Ubisoft":
 
 
     # Graphique séries annuelles
-    fig3 = go.Figure()
-    fig3.add_trace(go.Scatter(x=annual["Année"], y=annual["Revenus (millions)"],
-                              mode="lines+markers", name="Revenus (millions)", line=dict(width=3)))
-    fig3.add_trace(go.Scatter(x=annual["Année"], y=annual["Unités vendues (millions)"],
-                              mode="lines+markers", name="Unités vendues (millions)", yaxis="y2", line=dict(width=3)))
-    apply_light_theme(fig3, title_text="Évolution des revenus et unités vendues par année",
-                      x_title="Année", y1_title="Revenus (millions)", y2_title="Unités vendues (millions)")
-    st.plotly_chart(fig3, use_container_width=True)
+    # === Création du graphique principal ===
+fig3 = go.Figure()
+
+# Revenus (axe Y principal)
+fig3.add_trace(go.Scatter(
+    x=annual["Année"],
+    y=annual["Revenus (millions)"],
+    mode="lines+markers",
+    name="Revenus (millions)",
+    line=dict(width=3)
+))
+
+# Unités vendues (axe Y secondaire)
+fig3.add_trace(go.Scatter(
+    x=annual["Année"],
+    y=annual["Unités vendues (millions)"],
+    mode="lines+markers",
+    name="Unités vendues (millions)",
+    yaxis="y2",
+    line=dict(width=3)
+))
+
+# === Ligne verticale pour 2014 ===
+fig3.add_vline(
+    x=2014,
+    line=dict(color="red", width=2, dash="dash"),
+    annotation_text="Pic 2014",
+    annotation_position="top"
+)
+
+# === Point sur le pic 2014 ===
+try:
+    y_2014 = float(annual.loc[annual["Année"] == 2014, "Revenus (millions)"].iloc[0])
+except:
+    y_2014 = None
+
+if y_2014 is not None:
+    fig3.add_trace(go.Scatter(
+        x=[2014],
+        y=[y_2014],
+        mode="markers",
+        marker=dict(size=12, color="red", line=dict(width=2, color="black")),
+        name="Pic 2014"
+    ))
+
+# === Annotation Far Cry + Assassin's Creed ===
+fig3.add_annotation(
+    x=2014,
+    y=y_2014 if y_2014 is not None else annual["Revenus (millions)"].max(),
+    text="Pic dû à Assassin's Creed & Far Cry",
+    showarrow=True,
+    arrowhead=2,
+    ax=40,
+    ay=-80,
+    bgcolor="rgba(255,255,255,0.85)",
+    bordercolor="black",
+    borderwidth=1,
+    font=dict(color="black", size=12)
+)
+
+# === Appliquer ton thème personnalisé ===
+apply_light_theme(
+    fig3,
+    title_text="Évolution des revenus et unités vendues par année",
+    x_title="Année",
+    y1_title="Revenus (millions)",
+    y2_title="Unités vendues (millions)"
+)
+
+# === Affichage Streamlit ===
+st.plotly_chart(fig3, use_container_width=True)
 
     # Texte APRÈS (identique au doc)
     st.markdown("""
@@ -2146,6 +2209,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
