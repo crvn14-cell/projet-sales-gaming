@@ -13,8 +13,15 @@ import plotly.express as px
 # APP STREAMLIT : DOSSIER UBISOFT
 # ────────────────────────────────────────────────
 with st.sidebar:
-    # Image au-dessus du menu
-    st.image("ubi.png", width=120)
+    with st.sidebar:
+    st.markdown(
+        """
+        <div style="display: flex; justify-content: center;">
+            <img src="ubi.png" width="120">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     # Titre du menu (facultatif)
     st.markdown("**Aller vers :**")
@@ -2148,6 +2155,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
