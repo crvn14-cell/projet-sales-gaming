@@ -13,7 +13,7 @@ import plotly.express as px
 # APP STREAMLIT : DOSSIER UBISOFT
 # ────────────────────────────────────────────────
 with st.sidebar:
-    with st.sidebar:
+    
     st.markdown(
         """
         <div style="display: flex; justify-content: center;">
@@ -2155,6 +2155,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
