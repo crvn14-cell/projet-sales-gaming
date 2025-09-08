@@ -818,7 +818,7 @@ elif page == "Analyse financière comparative":
             fig.update_layout(
                 height=400, margin=dict(l=50, r=30, t=60, b=50),
                 legend_title_text="",
-                plot_bgcolor="black", paper_bgcolor="black"
+                plot_bgcolor="white", paper_bgcolor="white"
             )
             st.plotly_chart(fig, use_container_width=True)
     
@@ -849,7 +849,7 @@ elif page == "Analyse financière comparative":
             fig2.update_layout(
                 height=400, margin=dict(l=50, r=30, t=60, b=50),
                 legend_title_text="",
-                plot_bgcolor="black", paper_bgcolor="black"
+                plot_bgcolor="white", paper_bgcolor="white"
             )
             st.plotly_chart(fig2, use_container_width=True)
     
@@ -2148,6 +2148,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
