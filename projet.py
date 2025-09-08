@@ -14,16 +14,9 @@ import plotly.express as px
 # ────────────────────────────────────────────────
 with st.sidebar:
     
-    st.markdown(
-        """
-        <div style="display: flex; justify-content: center;">
-            <img src="ubi.png" width="120">
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    st.image("ubi.png", width=120)
 
-    # Titre du menu (facultatif)
+    # Titre du me nu (facultatif)
     st.markdown("**Aller vers :**")
 
     # Le menu lui-même
@@ -2155,6 +2148,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
