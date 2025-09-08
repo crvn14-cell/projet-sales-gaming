@@ -2024,7 +2024,7 @@ Beaucoup de joueurs font explicitement référence à *Black Flag*, renforçant 
     import numpy as np
     import streamlit as st
 
-    st.subheader(" Durée de Développement vs Note Metacritic — Taille des bulles = Budget de développement")
+    st.subheader(" Durée de Développement vs Note Metacritic")
     
     @st.cache_data
     def load_aaa():
@@ -2123,7 +2123,7 @@ Beaucoup de joueurs font explicitement référence à *Black Flag*, renforçant 
     
     fig.update_layout(
         title=dict(
-            text="Durée de Développement vs Note Metacritic — <b>Taille des bulles = Budget</b>",
+            text=" <b>Taille des bulles = Budget</b>",
             x=0.02, xanchor="left"
         ),
         height=560,
@@ -2209,6 +2209,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
