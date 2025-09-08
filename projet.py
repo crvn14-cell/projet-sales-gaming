@@ -362,8 +362,13 @@ elif page == "Analyse financière comparative":
             margin=dict(l=40, r=20, t=60, b=40),
             title_x=0.5,
             legend_title_text="",
+
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+
             plot_bgcolor="grey",
             paper_bgcolor="grey",
+
             bargap=0.25,
         )
         fig.update_xaxes(
@@ -696,10 +701,14 @@ elif page == "Analyse financière comparative":
         **Ubisoft** emploie un volume de salariés **comparable** à celui d’**Activision Blizzard**, mais ses **performances financières** sont nettement **inférieures**.  
         Par exemple, **Electronic Arts** opère avec **environ un tiers de personnel en moins**, tout en générant un **chiffre d’affaires** et un **résultat net** largement supérieurs.
         """)
+
+    # Bulles : CA↔Résultat (taille = masse salariale) + Masse salariale ↔ Effectif
+
         
 # ─────────────────────────────────────────────────────────────
     # Bulles (Plotly) — 2 onglets : Profit vs CA  |  Masse salariale vs Effectif
     # ─────────────────────────────────────────────────────────────
+
     st.divider()
     st.subheader("Pour aller un peu plus loin...")
     tabs = st.tabs(["💶 Résultat net vs Chiffre d’affaires", "👥 Masse salariale vs Effectif total"])
@@ -2134,6 +2143,8 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
+
 
 
 
