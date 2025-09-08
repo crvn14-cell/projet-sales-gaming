@@ -1802,7 +1802,7 @@ Ce jeu, censé capitaliser sur le succès de *Assassin’s Creed IV: Black Flag*
 Un **nuage de mots** généré à partir des critiques utilisateurs sur *Metacritic* permet de mettre en lumière
 cette perception.  
 Les termes les plus fréquents parlent d’eux-mêmes :  
-*“boring”*, *“repetitive”*, *“money”*, *“combat”*, *“waste”*, *“gameplay”*, *“disappointing”*, *“Black Flag”*, etc.
+*“boring”*, *“repetitive”*, *“money”*, *“fail”*, *“gameplay”*, *“bugs”*, *“Black Flag”*, etc.
 
 Ils illustrent une combinaison de **déception**, **d’ennui** et de **frustration économique**.  
 Beaucoup de joueurs font explicitement référence à *Black Flag*, renforçant la comparaison avec un jeu sur une
@@ -2209,6 +2209,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
