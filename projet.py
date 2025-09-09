@@ -1207,7 +1207,7 @@ elif page == "Analyse des performances des jeux Ubisoft":
     fig3.add_annotation(
         x=2014,
         y=y_2014 if y_2014 is not None else annual["Revenus (millions)"].max(),
-        text="Pic dû à Assassin's Creed & Far Cry",
+        text="Pic 2014",
         showarrow=True,
         arrowhead=2,
         ax=40,
@@ -1231,9 +1231,16 @@ elif page == "Analyse des performances des jeux Ubisoft":
 
     # Texte APRÈS (identique au doc)
     st.markdown("""
-    Les données révèlent une **forte concentration des revenus** sur quelques titres phares, notamment entre **2014** et **2015**, 
-    période marquée par le lancement d’épisodes majeurs d’*Assassin’s Creed* et de *Far Cry*.  
-    Cette dynamique s’est progressivement **estompée**.
+    Les données révèlent une **forte concentration des revenus** sur quelques titres phares, 
+    notamment entre **2014** et **2015**, période marquée par la sortie d’épisodes majeurs 
+    d’*Assassin’s Creed* et de *Far Cry*.  
+    
+    Cependant, une **grande partie des revenus** de cette période provient du succès de *Brawlhalla*, 
+    un jeu **Free-to-Play** qui a généré **environ 500 millions de dollars** à lui seul.  
+    
+    Cette performance exceptionnelle a fortement influencé les résultats financiers d’Ubisoft sur ces années, 
+    même si cette dynamique s’est progressivement **estompée** par la suite.
+    """)
 
     On voit que **chaque jeu contribue fortement** à la volatilité des revenus, confirmant que le **succès d’Ubisoft repose davantage 
     sur quelques blockbusters** que sur l’ensemble de son catalogue.
@@ -2208,6 +2215,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
