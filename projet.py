@@ -1351,7 +1351,7 @@ mais **ne parvient plus à recréer l’élan** des précédentes générations 
             fig5.add_trace(go.Scatter(x=wide.index, y=wide["Jeux gratuits"],
                                       mode="lines+markers", name="Jeux gratuits", line=dict(width=3, dash="dash")))
         apply_light_theme(fig5, title_text="Évolution des unités vendues/téléchargées : Jeux gratuits vs payants",
-                          x_title="Année", y1_title="Unités vendues (millions)")
+                          x_title="Année", y1_title="Unités vendues/téléchargées (millions)")
         st.plotly_chart(fig5, use_container_width=True)
 
         # ---------- Bloc de conclusion (à insérer à la fin du chapitre) ----------
@@ -2215,6 +2215,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
