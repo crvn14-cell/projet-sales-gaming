@@ -1235,7 +1235,7 @@ elif page == "Analyse des performances des jeux Ubisoft":
     notamment entre **2014** et **2015**, période marquée par la sortie d’épisodes majeurs 
     d’*Assassin’s Creed Unity* et de *Far Cry 4*.  
     
-    Cependant, une **grande partie des revenus** de cette période provient du succès de *Brawlhalla*, 
+    Cependant, une **grande partie des revenus** de cette période provient du succès de **Brawlhalla**, 
     un jeu **Free-to-Play** qui a généré **environ 500 millions de dollars** à lui seul.  
     
     Cette performance exceptionnelle a fortement influencé les résultats financiers d’Ubisoft sur ces années, 
@@ -2215,6 +2215,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
