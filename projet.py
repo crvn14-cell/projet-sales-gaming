@@ -1240,7 +1240,7 @@ elif page == "Analyse des performances des jeux Ubisoft":
     
     Cette performance exceptionnelle a fortement influencé les résultats financiers d’Ubisoft sur ces années, 
     même si cette dynamique s’est progressivement **estompée** par la suite.
-    """)
+    
 
     On voit que **chaque jeu contribue fortement** à la volatilité des revenus, confirmant que le **succès d’Ubisoft repose davantage 
     sur quelques blockbusters** que sur l’ensemble de son catalogue.
@@ -2215,6 +2215,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
