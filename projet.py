@@ -1226,45 +1226,7 @@ elif page == "Analyse des performances des jeux Ubisoft":
         y1_title="Revenus (millions)",
         y2_title="Unités vendues (millions)"
     )
-    # Normalisation souple des noms de colonnes
-    df_cols = {c.lower().strip(): c for c in df.columns}
-    YEAR_COL = df_cols.get('annee', df_cols.get('année', df_cols.get('year')))
-    GAME_COL = df_cols.get('jeu', df_cols.get('game'))
-    REV_COL  = (
-        df_cols.get('revenus (millions)', 
-        df_cols.get('revenus_millions', 
-        df_cols.get('revenue')))
-    )
-    
-    if YEAR_COL is None or GAME_COL is None or REV_COL is None:
-        st.warning("Colonnes attendues manquantes (année/jeu/revenus). Vérifie le DataFrame.")
-    else:
-        # Jeux à cumuler
-        jeux_cibles = ["Skull & Bones", "Assassin's Creed", "Far Cry 4"]
-    
-        # Somme des revenus en 2014 (valeurs manquantes traitées comme 0)
-        mask_2014 = (df[YEAR_COL] == 2014) & (df[GAME_COL].isin(jeux_cibles))
-        somme_2014 = df.loc[mask_2014, REV_COL].fillna(0).sum()
-    
-        # --- SI tu as déjà créé ton graphique principal "fig, ax = plt.subplots()" et tracé les courbes ---
-        # Ajoute la ligne horizontale des revenus cumulés
-        ax.axhline(y=somme_2014, linestyle='--', linewidth=1.8, color='red', alpha=0.8,
-                   label=f"Somme 2014 AC + Far Cry 4 + S&B ({somme_2014:.0f} M$)")
-    
-        # Annotation discrète à droite
-        x_right = ax.get_xlim()[1]
-        ax.text(x_right, somme_2014, f" {somme_2014:.0f} M$", va='bottom', ha='left',
-                fontsize=9, bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="grey", alpha=0.8))
-    
-        # Option : afficher la valeur dans l'UI
-        st.info(f"Revenus cumulés 2014 (Assassin's Creed, Far Cry 4, Skull & Bones) : **{somme_2014:.0f} M$**")
-    
-        # Mets à jour la légende si besoin
-        ax.legend(loc="upper right")
-    
-        # Rendu Streamlit
-        st.pyplot(fig)
-        # === Affichage Streamlit ===
+   
     st.plotly_chart(fig3, use_container_width=True)
 
     # Texte APRÈS (identique au doc)
@@ -2246,6 +2208,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
