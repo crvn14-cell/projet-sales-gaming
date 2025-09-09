@@ -1308,7 +1308,7 @@ mais **ne parvient plus à recréer l’élan** des précédentes générations 
     st.subheader("2.3. Des modèles économiques mal exploités")
     st.markdown(
     "Entre 2013 et 2015, Ubisoft parvient à capter l’attention du marché avec plusieurs initiatives Free-to-Play "
-    "et des titres à fort potentiel multijoueur (*The Mighty Quest for Epic Loot, Trackmania, Brawlhalla*, etc.)."
+    "et des titres à fort potentiel multijoueur (*The Mighty Quest for Epic Loot, Trackmania mais surtout Brawlhalla*, etc.)."
 )
 
     # ---------- Modèles économiques (gratuits vs payants) ----------
@@ -2215,6 +2215,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
