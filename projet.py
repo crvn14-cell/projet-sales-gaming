@@ -2030,7 +2030,7 @@ Beaucoup de joueurs font explicitement référence à *Black Flag*, renforçant 
     import numpy as np
     import streamlit as st
 
-    st.subheader(" Durée de Développement vs Note Metacritic")
+    st.subheader(" Durée de Développement vs Note Metacritic (Presse)")
     
     @st.cache_data
     def load_aaa():
@@ -2215,6 +2215,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
