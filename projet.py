@@ -1147,7 +1147,7 @@ elif page == "Analyse des performances des jeux Ubisoft":
 
     # Texte AVANT (identique au doc)
     st.markdown("""
-    Dans un marché de plus en plus **concurrentiel** où **l’attention des joueurs est difficile à capter **, ce positionnement nuit à la 
+    Dans un marché de plus en plus **concurrentiel** où **l’attention des joueurs est difficile à capter**, ce positionnement nuit à la 
     **visibilité** des titres d’Ubisoft et limite leur capacité à s’imposer comme des **références durables**.
     """)
     st.divider()
@@ -2215,6 +2215,7 @@ Par ailleurs, Ubisoft gagnerait à repenser ses modèles économiques, en redonn
 )
 
   
+
 
 
 
